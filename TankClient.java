@@ -1,7 +1,10 @@
+package BattleCity;
+
 import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class TankClient extends Frame implements ActionListener {
@@ -9,6 +12,8 @@ public class TankClient extends Frame implements ActionListener {
 	/**
 	 * 
 	 */
+    
+         // 初始化界面各控件
 	private static final long serialVersionUID = 1L;
 	public static final int Fram_width = 800; 
 	public static final int Fram_length = 600;
@@ -18,22 +23,9 @@ public class TankClient extends Frame implements ActionListener {
 	MenuItem jmi1 = null, jmi2 = null, jmi3 = null, jmi4 = null, jmi5 = null,
 			jmi6 = null, jmi7 = null, jmi8 = null, jmi9 = null,jmi10=null,jmi11=null;
 	Image screenImage = null;
-	
-	Tank homeTank = new Tank(300, 560, true, Direction.STOP, this,1);
-	Tank homeTank2 = new Tank(449, 560,true,Direction.STOP,this,2);
-	Boolean Player2=false;
-	GetBlood blood = new GetBlood();
-	Home home = new Home(373, 557, this);
-	Boolean win=false,lose=false;
-	List<River> theRiver = new ArrayList<River>();
-	List<Tank> tanks = new ArrayList<Tank>();
-	List<BombTank> bombTanks = new ArrayList<BombTank>();
-	List<Bullets> bullets = new ArrayList<Bullets>();
-	List<Tree> trees = new ArrayList<Tree>();
-	List<CommonWall> homeWall = new ArrayList<CommonWall>();
-	List<CommonWall> otherWall = new ArrayList<CommonWall>();
-	List<MetalWall> metalWall = new ArrayList<MetalWall>();
-
+	Level level = null;
+        
+        //刷新函数
 	public void update(Graphics g) {
 
 		screenImage = this.createImage(Fram_width, Fram_length);
@@ -43,197 +35,25 @@ public class TankClient extends Frame implements ActionListener {
 		gps.setColor(Color.GRAY);
 		gps.fillRect(0, 0, Fram_width, Fram_length);
 		gps.setColor(c);
-		framPaint(gps);
+            try {
+                framePaint(gps);
+            } catch (Exception ex) {
+                Logger.getLogger(TankClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+                updateStatus();
 		g.drawImage(screenImage, 0, 0, null);
 	}
-
-	public void framPaint(Graphics g) {
-
-		Color c = g.getColor();
-		g.setColor(Color.green); 
-
-		Font f1 = g.getFont();
-		g.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		if(!Player2)g.drawString("Tanks left in the field: ", 200, 70);
-		else g.drawString("Tanks left in the field: ", 100, 70);
-		g.setFont(new Font("Times New Roman", Font.ITALIC, 30));
-		if(!Player2)g.drawString("" + tanks.size(), 400, 70);
-		else g.drawString("" + tanks.size(), 300, 70);
-		g.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		if(!Player2)g.drawString("Health: ", 580, 70);
-		else g.drawString("Health: ", 380, 70);
-		g.setFont(new Font("Times New Roman", Font.ITALIC, 30));
-		if(!Player2) g.drawString("" + homeTank.getLife(), 650, 70);
-		else g.drawString("Player1: " + homeTank.getLife()+"    Player2:"+homeTank2.getLife(), 450, 70);
-		g.setFont(f1);
-		if (!Player2){
-			if (tanks.size() == 0 && home.isLive() && homeTank.isLive()&&lose==false) {
-			Font f = g.getFont();
-			g.setFont(new Font("Times New Roman", Font.BOLD, 60)); 
-			this.otherWall.clear();
-			g.drawString("Congratulations! ", 200, 300);
-			g.setFont(f);
-			win=true;
-		}
-
-		if (homeTank.isLive() == false&&win==false) {
-			Font f = g.getFont();
-			g.setFont(new Font("Times New Roman", Font.BOLD, 40));
-			tanks.clear();
-			bullets.clear();
-			g.drawString("Sorry. You lose!", 200, 300);
-			lose=true;
-			g.setFont(f);
-		}}else{
-			if (tanks.size() == 0 && home.isLive() && (homeTank.isLive()||homeTank2.isLive())&&lose==false) {
-				Font f = g.getFont();
-				g.setFont(new Font("Times New Roman", Font.BOLD, 60));
-				this.otherWall.clear();
-				g.drawString("Congratulations! ", 200, 300);
-				g.setFont(f);
-				win=true;
-			}
-
-			if (homeTank.isLive() == false&&homeTank2.isLive()==false&&win==false) {
-				Font f = g.getFont();
-				g.setFont(new Font("Times New Roman", Font.BOLD, 40));
-				tanks.clear();
-				bullets.clear();
-				g.drawString("Sorry. You lose!", 200, 300);
-				System.out.println("2");
-				g.setFont(f);
-				lose=true;
-			}
-		}
-		g.setColor(c);
-
-		for (int i = 0; i < theRiver.size(); i++) {
-			River r = theRiver.get(i);
-			r.draw(g);
-		}
-
-		for (int i = 0; i < theRiver.size(); i++) {
-			River r = theRiver.get(i);
-			homeTank.collideRiver(r);
-			if(Player2) homeTank2.collideRiver(r);
-			r.draw(g);
-		}
-
-		home.draw(g); 
-		homeTank.draw(g);
-		homeTank.eat(blood);
-		if (Player2) {homeTank2.draw(g);homeTank2.eat(blood);}
-		
-		for (int i = 0; i < bullets.size(); i++) { 
-			Bullets m = bullets.get(i);
-			m.hitTanks(tanks); 
-			m.hitTank(homeTank);
-			m.hitTank(homeTank2);
-			m.hitHome(); 
-			for(int j=0;j<bullets.size();j++){
-				if (i==j) continue;
-				Bullets bts=bullets.get(j);
-				m.hitBullet(bts);
-			}
-			for (int j = 0; j < metalWall.size(); j++) { 
-				MetalWall mw = metalWall.get(j);
-				m.hitWall(mw);
-			}
-
-			for (int j = 0; j < otherWall.size(); j++) {
-				CommonWall w = otherWall.get(j);
-				m.hitWall(w);
-			}
-
-			for (int j = 0; j < homeWall.size(); j++) {
-				CommonWall cw = homeWall.get(j);
-				m.hitWall(cw);
-			}
-			m.draw(g); 
-		}
-
-		for (int i = 0; i < tanks.size(); i++) {
-			Tank t = tanks.get(i); 
-
-			for (int j = 0; j < homeWall.size(); j++) {
-				CommonWall cw = homeWall.get(j);
-				t.collideWithWall(cw); 
-				cw.draw(g);
-			}
-			for (int j = 0; j < otherWall.size(); j++) { 
-				CommonWall cw = otherWall.get(j);
-				t.collideWithWall(cw);
-				cw.draw(g);
-			}
-			for (int j = 0; j < metalWall.size(); j++) {
-				MetalWall mw = metalWall.get(j);
-				t.collideWithWall(mw);
-				mw.draw(g);
-			}
-			for (int j = 0; j < theRiver.size(); j++) {
-				River r = theRiver.get(j);
-				t.collideRiver(r);
-				r.draw(g);
-				// t.draw(g);
-			}
-
-			t.collideWithTanks(tanks);
-			t.collideHome(home);
-
-			t.draw(g);
-		}
-
-		//blood.draw(g);
-
-		for (int i = 0; i < trees.size(); i++) { 
-			Tree tr = trees.get(i);
-			tr.draw(g);
-		}
-
-		for (int i = 0; i < bombTanks.size(); i++) { 
-			BombTank bt = bombTanks.get(i);
-			bt.draw(g);
-		}
-
-		for (int i = 0; i < otherWall.size(); i++) { 
-			CommonWall cw = otherWall.get(i);
-			cw.draw(g);
-		}
-
-		for (int i = 0; i < metalWall.size(); i++) { 
-			MetalWall mw = metalWall.get(i);
-			mw.draw(g);
-		}
-
-		homeTank.collideWithTanks(tanks);
-		homeTank.collideHome(home);
-		if (Player2) {homeTank2.collideWithTanks(tanks);
-		homeTank2.collideHome(home);}
-
-		for (int i = 0; i < metalWall.size(); i++) {
-			MetalWall w = metalWall.get(i);
-			homeTank.collideWithWall(w);
-			if (Player2)homeTank2.collideWithWall(w);
-			w.draw(g);
-		}
-
-		for (int i = 0; i < otherWall.size(); i++) {
-			CommonWall cw = otherWall.get(i);
-			homeTank.collideWithWall(cw);
-			if (Player2)homeTank2.collideWithWall(cw);
-			cw.draw(g);
-		}
-
-		for (int i = 0; i < homeWall.size(); i++) {
-			CommonWall w = homeWall.get(i);
-			homeTank.collideWithWall(w);
-			if (Player2)homeTank2.collideWithWall(w);
-			w.draw(g);
-		}
+        
+        // 主刷新函数，胜利失败判断
+	public void framePaint(Graphics g) throws Exception {
+                level.framePaint(g);
 
 	}
-
-	public TankClient() {
+        public void updateStatus(){
+            this.level.updateStatus();
+        }
+        //构造函数，添加监听，启动paint进程
+	public TankClient() throws Exception {
 		// printable = false;
 		
 		jmb = new MenuBar();
@@ -246,7 +66,8 @@ public class TankClient extends Frame implements ActionListener {
 		jm2.setFont(new Font("Times New Roman", Font.BOLD, 15));
 		jm3.setFont(new Font("Times New Roman", Font.BOLD, 15));
 		jm4.setFont(new Font("Times New Roman", Font.BOLD, 15));
-
+                jm5.setFont(new Font("Times New Roman", Font.BOLD, 15));
+                
 		jmi1 = new MenuItem("New Game");
 		jmi2 = new MenuItem("Exit");
 		jmi3 = new MenuItem("Stop");
@@ -310,67 +131,11 @@ public class TankClient extends Frame implements ActionListener {
 		this.setMenuBar(jmb);
 		this.setVisible(true);
 
-		for (int i = 0; i < 10; i++) { 
-			if (i < 4)
-				homeWall.add(new CommonWall(350, 580 - 21 * i, this));
-			else if (i < 7)
-				homeWall.add(new CommonWall(372 + 22 * (i - 4), 517, this));
-			else
-				homeWall.add(new CommonWall(416, 538 + (i - 7) * 21, this));
 
-		}
-
-		for (int i = 0; i < 32; i++) {
-			if (i < 16) {
-				otherWall.add(new CommonWall(200 + 21 * i, 300, this)); 
-				otherWall.add(new CommonWall(500 + 21 * i, 180, this));
-				otherWall.add(new CommonWall(200, 400 + 21 * i, this));
-				otherWall.add(new CommonWall(500, 400 + 21 * i, this));
-			} else if (i < 32) {
-				otherWall.add(new CommonWall(200 + 21 * (i - 16), 320, this));
-				otherWall.add(new CommonWall(500 + 21 * (i - 16), 220, this));
-				otherWall.add(new CommonWall(222, 400 + 21 * (i - 16), this));
-				otherWall.add(new CommonWall(522, 400 + 21 * (i - 16), this));
-			}
-		}
-
-		for (int i = 0; i < 20; i++) { 
-			if (i < 10) {
-				metalWall.add(new MetalWall(140 + 30 * i, 150, this));
-				metalWall.add(new MetalWall(600, 400 + 20 * (i), this));
-			} else if (i < 20)
-				metalWall.add(new MetalWall(140 + 30 * (i - 10), 180, this));
-			
-		}
-
-		for (int i = 0; i < 4; i++) { 
-			if (i < 4) {
-				trees.add(new Tree(0 + 30 * i, 360, this));
-				trees.add(new Tree(220 + 30 * i, 360, this));
-				trees.add(new Tree(440 + 30 * i, 360, this));
-				trees.add(new Tree(660 + 30 * i, 360, this));
-			}
-
-		}
-
-		theRiver.add(new River(85, 100, this));
-
-		for (int i = 0; i < 20; i++) {
-			if (i < 9) 
-				tanks.add(new Tank(150 + 70 * i, 40, false, Direction.D, this,0));
-			else if (i < 15)
-				tanks.add(new Tank(700, 140 + 50 * (i - 6), false, Direction.D,
-						this,0));
-			else
-				tanks
-						.add(new Tank(10, 50 * (i - 12), false, Direction.D,
-								this,0));
-		}
 
 		this.setSize(Fram_width, Fram_length);
 		this.setLocation(280, 50); 
-		this
-				.setTitle("Battle City    Final Project for CPE 640");
+		this.setTitle("Battle City    Final Project for JAVA");
 
 		this.addWindowListener(new WindowAdapter() { 
 					public void windowClosing(WindowEvent e) {
@@ -380,15 +145,17 @@ public class TankClient extends Frame implements ActionListener {
 		this.setResizable(false);
 		this.setBackground(Color.GREEN);
 		this.setVisible(true);
-
+                
+                this.level = new Level(1,this);
 		this.addKeyListener(new KeyMonitor());
 		new Thread(new PaintThread()).start(); 
 	}
 
-	public static void main(String[] args) {
+        //主函数
+	public static void main(String[] args) throws Exception {
 		new TankClient(); 
 	}
-
+        //Paint 线程
 	private class PaintThread implements Runnable {
 		public void run() {
 			// TODO Auto-generated method stub
@@ -402,17 +169,21 @@ public class TankClient extends Frame implements ActionListener {
 			}
 		}
 	}
-
+        // 坦克响应按键
 	private class KeyMonitor extends KeyAdapter {
 
 		public void keyReleased(KeyEvent e) { 
-			homeTank.keyReleased(e);
-			homeTank2.keyReleased(e);
+			level.homeTank.keyReleased(e);
+			level.homeTank2.keyReleased(e);
 		}
 
 		public void keyPressed(KeyEvent e) {
-			homeTank.keyPressed(e);
-			homeTank2.keyPressed(e);
+                    try {
+                        level.homeTank.keyPressed(e);
+                        level.homeTank2.keyPressed(e);
+                    } catch (Exception ex) {
+                        Logger.getLogger(TankClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    }
 		}
 
 	}
@@ -429,7 +200,11 @@ public class TankClient extends Frame implements ActionListener {
 
 				printable = true;
 				this.dispose();
-				new TankClient();
+                            try {
+                                new TankClient();
+                            } catch (Exception ex) {
+                                Logger.getLogger(TankClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                            }
 			} else {
 				printable = true;
 				new Thread(new PaintThread()).start(); 
@@ -437,13 +212,7 @@ public class TankClient extends Frame implements ActionListener {
 
 		} else if (e.getActionCommand().endsWith("Stop")) {
 			printable = false;
-			// try {
-			// Thread.sleep(10000);
-			//
-			// } catch (InterruptedException e1) {
-			// // TODO Auto-generated catch block
-			// e1.printStackTrace();
-			// }
+                        
 		} else if (e.getActionCommand().equals("Continue")) {
 
 			if (!printable) {
@@ -474,8 +243,14 @@ public class TankClient extends Frame implements ActionListener {
 			if (response == 0) {
 				printable = true;
 				this.dispose();
-				TankClient Player2add=new TankClient();
-				Player2add.Player2=true;
+                            try {
+                                TankClient tc = new TankClient();
+                                Level newLevel = new Level(this.level.getLevel(),tc);
+                                tc.level = newLevel;
+                                tc.level.player2=true;
+                            } catch (Exception ex) {
+                                Logger.getLogger(TankClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                            }
 			} else {
 				printable = true;
 				new Thread(new PaintThread()).start();
@@ -489,38 +264,13 @@ public class TankClient extends Frame implements ActionListener {
 			printable = true;
 			new Thread(new PaintThread()).start(); 
 		} else if (e.getActionCommand().equals("level1")) {
-			Tank.count = 12;
-			Tank.speedX = 6;
-			Tank.speedY = 6;
-			Bullets.speedX = 10;
-			Bullets.speedY = 10;
-			this.dispose();
-			new TankClient();
+
 		} else if (e.getActionCommand().equals("level2")) {
-			Tank.count = 12;
-			Tank.speedX = 10;
-			Tank.speedY = 10;
-			Bullets.speedX = 12;
-			Bullets.speedY = 12;
-			this.dispose();
-			new TankClient();
 
 		} else if (e.getActionCommand().equals("level3")) {
-			Tank.count = 20;
-			Tank.speedX = 14;
-			Tank.speedY = 14;
-			Bullets.speedX = 16;
-			Bullets.speedY = 16;
-			this.dispose();
-			new TankClient();
+
 		} else if (e.getActionCommand().equals("level4")) {
-			Tank.count = 20;
-			Tank.speedX = 16;
-			Tank.speedY = 16;
-			Bullets.speedX = 18;
-			Bullets.speedY = 18;
-			this.dispose();
-			new TankClient();
+
 		} else if (e.getActionCommand().equals("Join")){
 			printable = false;
 			String s=JOptionPane.showInputDialog("Please input URL:");

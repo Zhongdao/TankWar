@@ -1,3 +1,5 @@
+package BattleCity;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -7,16 +9,16 @@ public class GetBlood {
 	public static final int length = 30;
 
 	private int x, y;
-	TankClient tc;
+	Level level;
 	private static Random r = new Random();
 
 	int step = 0; 
-	private boolean live = false;
+	private boolean alive = false;
 
 	private static Toolkit tk = Toolkit.getDefaultToolkit();
 	private static Image[] bloodImags = null;
 	static {
-		bloodImags = new Image[] { tk.getImage(CommonWall.class
+		bloodImags = new Image[] { tk.getImage(BrickWall.class
 				.getResource("Images/hp.png")), };
 	}
 
@@ -25,10 +27,10 @@ public class GetBlood {
 
 	public void draw(Graphics g) {
 		if (r.nextInt(100) > 98) {
-			this.live = true;
+			this.alive = true;
 			move();
 		}
-		if (!live)
+		if (!alive)
 			return;
 		g.drawImage(bloodImags[0], x, y, null);
 
@@ -48,11 +50,11 @@ public class GetBlood {
 	}
 
 	public boolean isLive() {
-		return live;
+		return alive;
 	}
 
-	public void setLive(boolean live) {  
-		this.live = live;
+	public void setLive(boolean alive) {  
+		this.alive = alive;
 	}
 
 }

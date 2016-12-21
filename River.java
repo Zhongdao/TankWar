@@ -1,29 +1,31 @@
+package BattleCity;
+
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 
 
-public class River {
+public class River implements Block{
 	public static final int riverWidth = 55;
 	public static final int riverLength = 154;
 	private int x, y;
-	TankClient tc ;
+	Level level ;
 	
 	private static Toolkit tk = Toolkit.getDefaultToolkit();
 	private static Image[] riverImags = null;
 	
 	static {   
 		riverImags = new Image[]{
-				tk.getImage(CommonWall.class.getResource("Images/river.jpg")),
+				tk.getImage(BrickWall.class.getResource("Images/river.jpg")),
 		};
 	}
 	
 	
-	public River(int x, int y, TankClient tc) {   
+	public River(int x, int y, Level level) {   
 		this.x = x;
 		this.y = y;
-		this.tc = tc;           
+		this.level = level;           
 	}
 	
 	public void draw(Graphics g) {
@@ -56,5 +58,11 @@ public class River {
 		return new Rectangle(x, y, riverWidth, riverLength);
 	}
 
-
+    @Override
+    public boolean hitedBy(Bullet b) {
+         if (b.getAlive() && b.getRect().intersects(this.getRect())) {	
+			return true;
+		}
+		return false;
+    }
 }
