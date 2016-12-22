@@ -212,7 +212,6 @@ public class Tank implements Block {
         return false;
     }
 
-
     public int getdirect(int a, int b) {
         if (b == 13) {
 
@@ -429,7 +428,7 @@ public class Tank implements Block {
         }
     }
 
-    public boolean eat(GetBlood b) {
+    public boolean eat(Heart b) {
         if (this.live && b.isLive() && this.getRect().intersects(b.getRect())) {
             if (this.life <= 100) {
                 this.life = this.life + 100;

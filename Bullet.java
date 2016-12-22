@@ -7,19 +7,19 @@ import java.util.Map;
 
 public class Bullet implements Block {
 
-    public static int speedX = 12;
-    public static int speedY = 12;
+    private static int speedX = 12;
+    private static int speedY = 12;
 
     public static final int width = 10;
     public static final int length = 10;
 
     private int x, y;
-    Direction diretion;
+    private Direction diretion;
 
     private boolean good;
     private boolean alive = true;
 
-    public Level level;
+    private Level level;
 
     private static Toolkit tk = Toolkit.getDefaultToolkit();
     private static Image[] bulletImages = null;
@@ -133,9 +133,10 @@ public class Bullet implements Block {
         return false;
     }
 
-    public boolean hit(Block b){
+    public boolean hit(Block b) {
         return b.hitedBy(this);
     }
+
     public boolean getAlive() {
         return alive;
     }
@@ -143,8 +144,12 @@ public class Bullet implements Block {
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
-    public boolean isGood(){
+
+    public boolean isGood() {
         return good;
     }
-    
+
+    public Level getLevel() {
+        return this.level;
+    }
 }

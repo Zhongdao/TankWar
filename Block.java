@@ -12,6 +12,8 @@ import java.awt.Rectangle;
  * @author Administrator
  */
 public interface Block {
+
     public abstract Rectangle getRect();
+
     public abstract boolean hitedBy(Bullet b);
 }

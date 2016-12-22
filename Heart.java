@@ -3,13 +3,13 @@ package BattleCity;
 import java.awt.*;
 import java.util.Random;
 
-public class GetBlood {
+public class Heart {
 	
 	public static final int width = 34;
 	public static final int length = 30;
 
 	private int x, y;
-	Level level;
+	private Level level;
 	private static Random r = new Random();
 
 	int step = 0; 
@@ -26,7 +26,7 @@ public class GetBlood {
 			{600,321}, { 345, 456 }, { 123, 321 }, { 258, 413 } };
 
 	public void draw(Graphics g) {
-		if (r.nextInt(100) > 98) {
+		if (r.nextInt(100) > 0) {
 			this.alive = true;
 			move();
 		}

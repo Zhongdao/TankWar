@@ -24,7 +24,7 @@ public class Level {
     protected Boolean player1 = true;
     protected Boolean player2 = false;
     protected TankClient tc = null;
-    protected GetBlood blood = new GetBlood();
+    protected Heart blood = new Heart();
     protected Home home = new Home(373, 557, this);
     protected Boolean win = false, lose = false;
     protected List<River> theRiver = new ArrayList<River>();
@@ -41,7 +41,7 @@ public class Level {
         this.level = l;
         this.tc = tc;
         switch (l) {
-
+            
             case 1: {
                 for (int i = 0; i < 10; i++) {
                     if (i < 4) {
@@ -90,17 +90,7 @@ public class Level {
 
                 theRiver.add(new River(85, 100, this));
                 tanks.add(new Tank(150, 40, false, Direction.D, this, 0));
-//                for (int i = 0; i < 20; i++) {
-//                    if (i < 9) {
-//                        tanks.add(new Tank(150 + 70 * i, 40, false, Direction.D, this, 0));
-//                    } else if (i < 15) {
-//                        tanks.add(new Tank(700, 140 + 50 * (i - 6), false, Direction.D,
-//                                this, 0));
-//                    } else {
-//                        tanks.add(new Tank(10, 50 * (i - 12), false, Direction.D,
-//                                this, 0));
-//                    }
-//                }
+
                 break;
             }
 
@@ -267,7 +257,8 @@ public class Level {
             }
         }
         g.setColor(c);
-
+        Heart h = new Heart();
+        h.draw(g);
         //坦克不能再河里，所以画河要检查
         for (int i = 0; i < theRiver.size(); i++) {
             River r = theRiver.get(i);
@@ -413,7 +404,7 @@ public class Level {
     }
 
     public void updateStatus() {
-        
+
     }
 
     public int getLevel() {

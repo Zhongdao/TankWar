@@ -31,7 +31,7 @@ public class BombTank {
         "images/9.gif")),
         tk.getImage(BombTank.class.getResource(
         "images/10.gif")),};
-    int step = 0;
+    private static int step = 0;
 
     public BombTank(int x, int y, Level level) {
         this.x = x;
