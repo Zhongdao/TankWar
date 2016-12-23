@@ -1,4 +1,4 @@
-package BattleCity;
+package TankWar;
 
 import java.util.ArrayList;
 import java.awt.*;
@@ -13,14 +13,13 @@ public class TankClient extends Frame implements ActionListener {
      *
      */
     // 初始化界面各控件
-    private static final long serialVersionUID = 1L;
     public static final int Fram_width = 800;
     public static final int Fram_length = 600;
     public static boolean printable = true;
     MenuBar jmb = null;
     Menu jm1 = null, jm2 = null, jm3 = null, jm4 = null, jm5 = null;
     MenuItem jmi1 = null, jmi2 = null, jmi3 = null, jmi4 = null, jmi5 = null,
-            jmi6 = null, jmi7 = null, jmi8 = null, jmi9 = null, jmi10 = null;
+            jmi6 = null, jmi7 = null, jmi8 = null, jmi10 = null;
     Image screenImage = null;
     Level level = null;
 
@@ -35,23 +34,17 @@ public class TankClient extends Frame implements ActionListener {
         gps.fillRect(0, 0, Fram_width, Fram_length);
         gps.setColor(c);
         try {
-            framePaint(gps);
+            level.framePaint(gps);
         } catch (Exception ex) {
             Logger.getLogger(TankClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        updateStatus();
+        
         g.drawImage(screenImage, 0, 0, null);
     }
 
-    // 主刷新函数，胜利失败判断
-    public void framePaint(Graphics g) throws Exception {
-        level.framePaint(g);
 
-    }
 
-    public void updateStatus() {
-        this.level.updateStatus();
-    }
+
     //构造函数，添加监听，启动paint进程
 
     public TankClient() throws Exception {
@@ -77,7 +70,6 @@ public class TankClient extends Frame implements ActionListener {
         jmi6 = new MenuItem("Level1");
         jmi7 = new MenuItem("Level2");
         jmi8 = new MenuItem("Level3");
-        jmi9 = new MenuItem("Level4");
         jmi10 = new MenuItem("Add Player 2");
         jmi1.setFont(new Font("Times New Roman", Font.BOLD, 15));
         jmi2.setFont(new Font("Times New Roman", Font.BOLD, 15));
@@ -93,7 +85,6 @@ public class TankClient extends Frame implements ActionListener {
         jm4.add(jmi6);
         jm4.add(jmi7);
         jm4.add(jmi8);
-        jm4.add(jmi9);
         jm5.add(jmi10);
 
        
@@ -121,8 +112,6 @@ public class TankClient extends Frame implements ActionListener {
         jmi7.setActionCommand("level2");
         jmi8.addActionListener(this);
         jmi8.setActionCommand("level3");
-        jmi9.addActionListener(this);
-        jmi9.setActionCommand("level4");
         jmi10.addActionListener(this);
         jmi10.setActionCommand("Player2");
 
@@ -263,12 +252,26 @@ public class TankClient extends Frame implements ActionListener {
             printable = true;
             new Thread(new PaintThread()).start();
         } else if (e.getActionCommand().equals("level1")) {
+            printable = true;
+            try {
+                this.level = new Level(1, this);
+            } catch (Exception ex) {
+                Logger.getLogger(TankClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
 
         } else if (e.getActionCommand().equals("level2")) {
+             try {
+                this.level = new Level(2, this);
+            } catch (Exception ex) {
+                Logger.getLogger(TankClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
 
         } else if (e.getActionCommand().equals("level3")) {
-
-        } else if (e.getActionCommand().equals("level4")) {
+            try {
+                this.level = new Level(3, this);
+            } catch (Exception ex) {
+                Logger.getLogger(TankClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
 
         } 
 

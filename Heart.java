@@ -1,4 +1,4 @@
-package BattleCity;
+package TankWar;
 
 import java.awt.*;
 import java.util.Random;
@@ -33,7 +33,6 @@ public class Heart {
 		if (!alive)
 			return;
 		g.drawImage(bloodImags[0], x, y, null);
-
 	}
 
 	private void move() {

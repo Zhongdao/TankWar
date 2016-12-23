@@ -1,9 +1,12 @@
-package BattleCity;
+package TankWar;
 
 import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import TankWar.Direction;
+import TankWar.TankClient;
 
 public class Bullet implements Block {
 

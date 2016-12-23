@@ -1,10 +1,11 @@
-package BattleCity;
+package TankWar;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 
-public class Tree {
+public class Tree implements Block{
 
     public static final int width = 30;
     public static final int length = 30;
@@ -27,5 +28,16 @@ public class Tree {
     public void draw(Graphics g) {
         g.drawImage(treeImags[0], x, y, null);
     }
+
+	@Override
+	public Rectangle getRect() {
+		return new Rectangle(x, y, width, length);
+	}
+
+	@Override
+	public boolean hitedBy(Bullet b) {
+		
+		return false;
+	}
 
 }

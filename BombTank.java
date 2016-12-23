@@ -1,8 +1,10 @@
-package BattleCity;
+package TankWar;
 
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+
+import TankWar.BombTank;
 
 public class BombTank {
 

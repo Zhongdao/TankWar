@@ -1,4 +1,4 @@
-package BattleCity;
+package TankWar;
 
 import java.awt.Color;
 import java.awt.Font;

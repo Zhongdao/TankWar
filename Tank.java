@@ -1,4 +1,4 @@
-package BattleCity;
+package TankWar;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -7,7 +7,6 @@ import java.util.*;
 public class Tank implements Block {
 
     public static int speedX = 6, speedY = 6;
-    public static int count = 0;
     public static final int width = 35, length = 35;
     private Direction direction = Direction.STOP;
     private Direction Kdirection = Direction.U;
@@ -21,7 +20,6 @@ public class Tank implements Block {
     private int rate = 1;
     private static Random r = new Random();
     private int step = r.nextInt(10) + 5;
-
     private boolean bL = false, bU = false, bR = false, bD = false;
 
     private static Toolkit tk = Toolkit.getDefaultToolkit();
@@ -159,13 +157,13 @@ public class Tank implements Block {
                 step = r.nextInt(12) + 3;
                 int mod = r.nextInt(9);
                 if (playertankaround()) {
-                    if (x == level.homeTank.x) {
+                    if (Math.abs(x - level.homeTank.x)<60) {
                         if (y > level.homeTank.y) {
                             direction = directons[1];
                         } else if (y < level.homeTank.y) {
                             direction = directons[3];
                         }
-                    } else if (y == level.homeTank.y) {
+                    } else if (Math.abs(y - level.homeTank.y)<60) {
                         if (x > level.homeTank.x) {
                             direction = directons[0];
                         } else if (x < level.homeTank.x) {
@@ -175,10 +173,26 @@ public class Tank implements Block {
                         int rn = r.nextInt(directons.length);
                         direction = directons[rn];
                     }
+                    if(level.player2==true){
+                        if (Math.abs(x - level.homeTank2.x)<200) {
+                            if (y > level.homeTank2.y) {
+                                direction = directons[1];
+                            } else if (y < level.homeTank2.y) {
+                                direction = directons[3];
+                            }
+                        } else if (Math.abs(y - level.homeTank2.y)<200) {
+                            if (x > level.homeTank2.x) {
+                                direction = directons[0];
+                            } else if (x < level.homeTank2.x) {
+                                direction = directons[2];
+                            }
+                        } else {
+                            int rn = r.nextInt(directons.length);
+                            direction = directons[rn];
+                        }
+                    }
                     rate = 2;
-                } else if (mod == 1) {
-                    rate = 1;
-                } else if (1 < mod && mod <= 3) {
+                }  else if (1 <= mod && mod <= 3) {
                     rate = 1;
                 } else {
                     int rn = r.nextInt(directons.length);
@@ -198,25 +212,16 @@ public class Tank implements Block {
     }
 
     public boolean playertankaround() {
-        int rx = x - 15, ry = y - 15;
-        if ((x - 15) < 0) {
-            rx = 0;
+
+        if (Math.abs(this.getX()- level.homeTank.getX()+
+            Math.abs(this.getY()- level.homeTank.getY()))<300) {
+            return true;
         }
-        if ((y - 15) < 0) {
-            ry = 0;
-        }
-        Rectangle a = new Rectangle(rx, ry, 60, 60);
-        if (this.live && a.intersects(level.homeTank.getRect())) {
+        if (Math.abs(this.getX()- level.homeTank2.getX()+
+            Math.abs(this.getY()- level.homeTank2.getY()))<300) {
             return true;
         }
         return false;
-    }
-
-    public int getdirect(int a, int b) {
-        if (b == 13) {
-
-        }
-        return 4;
     }
 
     private void changToOldDir() {
@@ -369,7 +374,6 @@ public class Tank implements Block {
             }
 
             b.setAlive(false);
-
             return true;
         }
         return false;
@@ -414,31 +418,6 @@ public class Tank implements Block {
 
     public void setLife(int life) {
         this.life = life;
-    }
-
-    private class DrawBloodbBar {
-
-        public void draw(Graphics g) {
-            Color c = g.getColor();
-            g.setColor(Color.RED);
-            g.drawRect(375, 585, width, 10);
-            int w = width * life / 200;
-            g.fillRect(375, 585, w, 10);
-            g.setColor(c);
-        }
-    }
-
-    public boolean eat(Heart b) {
-        if (this.live && b.isLive() && this.getRect().intersects(b.getRect())) {
-            if (this.life <= 100) {
-                this.life = this.life + 100;
-            } else {
-                this.life = 200;
-            }
-            b.setLive(false);
-            return true;
-        }
-        return false;
     }
 
     public int getX() {
